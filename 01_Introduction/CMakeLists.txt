@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(SampleCode VERSION 0.1)
+project(01_Introduction VERSION 0.1)
 
 #======================= INCLUSION OF Qt =======================#
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -22,9 +22,9 @@ find_package(Qt5Xml REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 
 #======================= INCLUSION OF Our Code ======================#
-set(FORMS_DIR "${CMAKE_SOURCE_DIR}/forms")
-set(INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include")
-set(SOURCE_DIR "${CMAKE_SOURCE_DIR}/src")
+set(FORMS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/forms")
+set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
+set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 include_directories(${FORMS_DIR})
 include_directories(${INCLUDE_DIR})
@@ -41,18 +41,18 @@ set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_AUTOUIC_SEARCH_PATHS} ${FORMS_DIR})
 
 # Add the executable
 if (WIN32) 
-    add_executable(SampleCode WIN32 ${SOURCES})
+    add_executable(01_Introduction WIN32 ${SOURCES})
 elseif(UNIX)
-    add_executable(SampleCode ${SOURCES})
+    add_executable(01_Introduction ${SOURCES})
 endif()
 
 # Add the target includes
-target_include_directories(SampleCode PRIVATE ${FORMS_DIR})
-target_include_directories(SampleCode PRIVATE ${INCLUDE_DIR})
-target_include_directories(SampleCode PRIVATE ${SOURCE_DIR})
+target_include_directories(01_Introduction PRIVATE ${FORMS_DIR})
+target_include_directories(01_Introduction PRIVATE ${INCLUDE_DIR})
+target_include_directories(01_Introduction PRIVATE ${SOURCE_DIR})
 
 #===================== LINKING LIBRARIES =======================#
-target_link_libraries( SampleCode Qt5::OpenGL)
-target_link_libraries( SampleCode Qt5::Xml)
-target_link_libraries( SampleCode Qt5::Widgets)
-target_link_libraries( SampleCode ${QT_LIBRARIES} ${OPENGL_LIBRARIES})
+target_link_libraries( 01_Introduction Qt5::OpenGL)
+target_link_libraries( 01_Introduction Qt5::Xml)
+target_link_libraries( 01_Introduction Qt5::Widgets)
+target_link_libraries( 01_Introduction ${QT_LIBRARIES} ${OPENGL_LIBRARIES})
