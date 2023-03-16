@@ -22,9 +22,9 @@ find_package(Qt5Xml REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 
 #======================= INCLUSION OF Our Code ======================#
-set(FORMS_DIR "${CMAKE_SOURCE_DIR}/forms")
-set(INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include")
-set(SOURCE_DIR "${CMAKE_SOURCE_DIR}/src")
+set(FORMS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/forms")
+set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
+set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 include_directories(${FORMS_DIR})
 include_directories(${INCLUDE_DIR})
