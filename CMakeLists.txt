@@ -23,3 +23,4 @@ find_package(Qt5Widgets REQUIRED)
 
 add_subdirectory(01_Introduction)
 add_subdirectory(02_VBO)
+add_subdirectory(03_Transformation)
