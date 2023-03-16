@@ -23,3 +23,4 @@ find_package(Qt5Widgets REQUIRED)
 
 add_subdirectory(Quiz_01)
 add_subdirectory(Quiz_02)
+add_subdirectory(Quiz_03)
