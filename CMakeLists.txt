@@ -22,3 +22,4 @@ find_package(Qt5Xml REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 
 add_subdirectory(01_Introduction)
+add_subdirectory(02_VBO)
