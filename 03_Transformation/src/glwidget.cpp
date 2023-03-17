@@ -63,9 +63,9 @@ void glWidget::paintGL()
     GLuint uModelMatrix = glGetUniformLocation(program->programId(), "uModelMatrix");
     
     // use algebra-matrix for 3D Transformation
-    M = rotation3D(vec3(0.0, 0.0, 1.0), -45)* M;
+    M = rotation3D(vec3(0.0, 0.0, 1.0), 45)* M;
     M = identity3D();
-    M = translation3D(vec3(0.0, -0.5, 0.0)) * scaling3D(vec3(2.0, 3.0, 1.0)) * M;
+    M = translation3D(vec3(0.0, 0.5, 0.0)) * scaling3D(vec3(2.0, 3.0, 1.0)) * M;
     // pass M elements to openGL Matrix
     GLfloat rotationMatrix[] = { 
             M[VX][0], M[VX][1], M[VX][2], M[VX][3],
@@ -74,7 +74,7 @@ void glWidget::paintGL()
             M[VW][0], M[VW][1], M[VW][2], M[VW][3]
     };
     //pass the transformation matrix to shader
-    glUniformMatrix4fv(uModelMatrix, 1, GL_FALSE, rotationMatrix); 
+    glUniformMatrix4fv(uModelMatrix, 1, GL_TRUE, rotationMatrix); 
 
     // Clear glwidget by background color before drawing
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
