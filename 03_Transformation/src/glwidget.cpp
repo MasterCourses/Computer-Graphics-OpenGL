@@ -62,10 +62,10 @@ void glWidget::paintGL()
     // set the Uniform attribute for Transformation Matrix 
     GLuint uModelMatrix = glGetUniformLocation(program->programId(), "uModelMatrix");
     
-    // use algebra-matrix for 3D Transformation
-    M = rotation3D(vec3(0.0, 0.0, 1.0), 45)* M;
+    // use algebra-matrix for 3D Transformation   
+    M = M * rotation3D(vec3(0.0, 0.0, 1.0), 45); // Original Matrix (M) must be placed at the front of the Transform Matrix(rotation3D)
     M = identity3D();
-    M = translation3D(vec3(0.0, 0.5, 0.0)) * scaling3D(vec3(2.0, 3.0, 1.0)) * M;
+    M = M * translation3D(vec3(0.0, 0.5, 0.0)) * scaling3D(vec3(2.0, 3.0, 1.0));  // Original Matrix(M) must be placed at the front of the Transform Matrix(translation3D, scaling3D)
     // pass M elements to openGL Matrix
     GLfloat rotationMatrix[] = { 
             M[VX][0], M[VX][1], M[VX][2], M[VX][3],
