@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(Quiz_01 VERSION 0.1)
+project(Quiz_04_Robot_Joint_Rotation VERSION 0.1)
 
 #======================= INCLUSION OF Qt =======================#
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -41,18 +41,18 @@ set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_AUTOUIC_SEARCH_PATHS} ${FORMS_DIR})
 
 # Add the executable
 if (WIN32) 
-    add_executable(Quiz_01 WIN32 ${SOURCES})
+    add_executable(Quiz_04_Robot_Joint_Rotation WIN32 ${SOURCES})
 elseif(UNIX)
-    add_executable(Quiz_01 ${SOURCES})
+    add_executable(Quiz_04_Robot_Joint_Rotation ${SOURCES})
 endif()
 
 # Add the target includes
-target_include_directories(Quiz_01 PRIVATE ${FORMS_DIR})
-target_include_directories(Quiz_01 PRIVATE ${INCLUDE_DIR})
-target_include_directories(Quiz_01 PRIVATE ${SOURCE_DIR})
+target_include_directories(Quiz_04_Robot_Joint_Rotation PRIVATE ${FORMS_DIR})
+target_include_directories(Quiz_04_Robot_Joint_Rotation PRIVATE ${INCLUDE_DIR})
+target_include_directories(Quiz_04_Robot_Joint_Rotation PRIVATE ${SOURCE_DIR})
 
 #===================== LINKING LIBRARIES =======================#
-target_link_libraries( Quiz_01 Qt5::OpenGL)
-target_link_libraries( Quiz_01 Qt5::Xml)
-target_link_libraries( Quiz_01 Qt5::Widgets)
-target_link_libraries( Quiz_01 ${QT_LIBRARIES} ${OPENGL_LIBRARIES})
+target_link_libraries( Quiz_04_Robot_Joint_Rotation Qt5::OpenGL)
+target_link_libraries( Quiz_04_Robot_Joint_Rotation Qt5::Xml)
+target_link_libraries( Quiz_04_Robot_Joint_Rotation Qt5::Widgets)
+target_link_libraries( Quiz_04_Robot_Joint_Rotation ${QT_LIBRARIES} ${OPENGL_LIBRARIES})

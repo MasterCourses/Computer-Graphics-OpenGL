@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>window</class>
+ <widget class="QWidget" name="window">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>619</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>window</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="1" column="0">
+    <widget class="glWidget" name="widget" native="true">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>18</pointsize>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>04_Quiz_Robot_Joint_Rotation</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="title">
+      <string>Interactive Controller</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Translate-X:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSlider" name="xTranslateSlider">
+          <property name="minimum">
+           <number>-100</number>
+          </property>
+          <property name="maximum">
+           <number>100</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Red Rotation:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSlider" name="jointRedSlider">
+          <property name="maximum">
+           <number>45</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>Green Rotation:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSlider" name="jointGreenSlider">
+          <property name="maximum">
+           <number>45</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>Yellow Rotation:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSlider" name="jointYellowSlider">
+          <property name="maximum">
+           <number>45</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>glWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">glwidget.h</header>
+   <container>1</container>
+   <slots>
+    <slot>setXTranslate(int)</slot>
+    <slot>setJointForRedRotation(int)</slot>
+    <slot>setJointForGreenRotation(int)</slot>
+    <slot>setJointForYellowRotation(int)</slot>
+   </slots>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>xTranslateSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>widget</receiver>
+   <slot>setXTranslate(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>143</x>
+     <y>382</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>137</x>
+     <y>289</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>jointRedSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>widget</receiver>
+   <slot>setJointForRedRotation(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>160</x>
+     <y>448</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>168</x>
+     <y>303</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>jointGreenSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>widget</receiver>
+   <slot>setJointForGreenRotation(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>198</x>
+     <y>509</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>201</x>
+     <y>312</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>jointYellowSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>widget</receiver>
+   <slot>setJointForYellowRotation(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>221</x>
+     <y>572</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>230</x>
+     <y>315</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

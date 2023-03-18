@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(Quiz_02 VERSION 0.1)
+project(Quiz_02_Draw_Rectangle VERSION 0.1)
 
 #======================= INCLUSION OF Qt =======================#
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -41,18 +41,18 @@ set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_AUTOUIC_SEARCH_PATHS} ${FORMS_DIR})
 
 # Add the executable
 if (WIN32) 
-    add_executable(Quiz_02 WIN32 ${SOURCES})
+    add_executable(Quiz_02_Draw_Rectangle WIN32 ${SOURCES})
 elseif(UNIX)
-    add_executable(Quiz_02 ${SOURCES})
+    add_executable(Quiz_02_Draw_Rectangle ${SOURCES})
 endif()
 
 # Add the target includes
-target_include_directories(Quiz_02 PRIVATE ${FORMS_DIR})
-target_include_directories(Quiz_02 PRIVATE ${INCLUDE_DIR})
-target_include_directories(Quiz_02 PRIVATE ${SOURCE_DIR})
+target_include_directories(Quiz_02_Draw_Rectangle PRIVATE ${FORMS_DIR})
+target_include_directories(Quiz_02_Draw_Rectangle PRIVATE ${INCLUDE_DIR})
+target_include_directories(Quiz_02_Draw_Rectangle PRIVATE ${SOURCE_DIR})
 
 #===================== LINKING LIBRARIES =======================#
-target_link_libraries( Quiz_02 Qt5::OpenGL)
-target_link_libraries( Quiz_02 Qt5::Xml)
-target_link_libraries( Quiz_02 Qt5::Widgets)
-target_link_libraries( Quiz_02 ${QT_LIBRARIES} ${OPENGL_LIBRARIES})
+target_link_libraries( Quiz_02_Draw_Rectangle Qt5::OpenGL)
+target_link_libraries( Quiz_02_Draw_Rectangle Qt5::Xml)
+target_link_libraries( Quiz_02_Draw_Rectangle Qt5::Widgets)
+target_link_libraries( Quiz_02_Draw_Rectangle ${QT_LIBRARIES} ${OPENGL_LIBRARIES})

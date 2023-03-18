@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(Quiz_03 VERSION 0.1)
+project(Quiz_03_Transformation_Animation VERSION 0.1)
 
 #======================= INCLUSION OF Qt =======================#
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -41,18 +41,18 @@ set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_AUTOUIC_SEARCH_PATHS} ${FORMS_DIR})
 
 # Add the executable
 if (WIN32) 
-    add_executable(Quiz_03 WIN32 ${SOURCES})
+    add_executable(Quiz_03_Transformation_Animation WIN32 ${SOURCES})
 elseif(UNIX)
-    add_executable(Quiz_03 ${SOURCES})
+    add_executable(Quiz_03_Transformation_Animation ${SOURCES})
 endif()
 
 # Add the target includes
-target_include_directories(Quiz_03 PRIVATE ${FORMS_DIR})
-target_include_directories(Quiz_03 PRIVATE ${INCLUDE_DIR})
-target_include_directories(Quiz_03 PRIVATE ${SOURCE_DIR})
+target_include_directories(Quiz_03_Transformation_Animation PRIVATE ${FORMS_DIR})
+target_include_directories(Quiz_03_Transformation_Animation PRIVATE ${INCLUDE_DIR})
+target_include_directories(Quiz_03_Transformation_Animation PRIVATE ${SOURCE_DIR})
 
 #===================== LINKING LIBRARIES =======================#
-target_link_libraries( Quiz_03 Qt5::OpenGL)
-target_link_libraries( Quiz_03 Qt5::Xml)
-target_link_libraries( Quiz_03 Qt5::Widgets)
-target_link_libraries( Quiz_03 ${QT_LIBRARIES} ${OPENGL_LIBRARIES})
+target_link_libraries( Quiz_03_Transformation_Animation Qt5::OpenGL)
+target_link_libraries( Quiz_03_Transformation_Animation Qt5::Xml)
+target_link_libraries( Quiz_03_Transformation_Animation Qt5::Widgets)
+target_link_libraries( Quiz_03_Transformation_Animation ${QT_LIBRARIES} ${OPENGL_LIBRARIES})
