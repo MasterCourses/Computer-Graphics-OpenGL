@@ -7,8 +7,6 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLVertexArrayObject>
 
-#include "algebra3.h"
-#include <array>
 using namespace std;
 
 class glWidget : public QOpenGLWidget, protected QOpenGLFunctions
@@ -34,7 +32,7 @@ private:
 private:
     QOpenGLShaderProgram* program;  
     GLuint vertexBuffer, colorBuffer;
-    mat4 M; // use algebra-matrix for 3D Transformation
+    QMatrix4x4  transformMatrix; // use qt-opengl framework
 };
 
 #endif // GLWIDGET_H

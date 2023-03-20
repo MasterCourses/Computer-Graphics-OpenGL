@@ -62,19 +62,13 @@ void glWidget::paintGL()
     // set the Uniform attribute for Transformation Matrix 
     GLuint uModelMatrix = glGetUniformLocation(program->programId(), "uModelMatrix");
     
-    // use algebra-matrix for 3D Transformation   
-    M = M * rotation3D(vec3(0.0, 0.0, 1.0), 45); // Original Matrix (M) must be placed at the front of the Transform Matrix(rotation3D)
-    M = identity3D();
-    M = M * translation3D(vec3(0.0, 0.5, 0.0)) * scaling3D(vec3(2.0, 3.0, 1.0));  // Original Matrix(M) must be placed at the front of the Transform Matrix(translation3D, scaling3D)
-    // pass M elements to openGL Matrix
-    GLfloat rotationMatrix[] = { 
-            M[VX][0], M[VX][1], M[VX][2], M[VX][3],
-            M[VY][0], M[VY][1], M[VY][2], M[VY][3],
-            M[VZ][0], M[VZ][1], M[VZ][2], M[VZ][3],
-            M[VW][0], M[VW][1], M[VW][2], M[VW][3]
-    };
+    // use qt-opengl framework for 3D Transformation   
+    transformMatrix.rotate(45, QVector3D(0.0f, 0.0f, 1.0f)); // rotate(degree, axis)
+    transformMatrix.setToIdentity();
+    transformMatrix.translate(QVector3D(0.0f, 0.5f, 0.0f));
+    transformMatrix.scale(QVector3D(2.0f, 3.5f, 1.0f));
     //pass the transformation matrix to shader
-    glUniformMatrix4fv(uModelMatrix, 1, GL_TRUE, rotationMatrix); 
+    glUniformMatrix4fv(uModelMatrix, 1, GL_FALSE, transformMatrix.data());
 
     // Clear glwidget by background color before drawing
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);

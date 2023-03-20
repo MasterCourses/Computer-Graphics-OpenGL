@@ -7,11 +7,6 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLVertexArrayObject>
 
-#include <iostream>
-#include <stack>
-#include "algebra3.h"
-using namespace std;
-
 class glWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
     Q_OBJECT
@@ -32,7 +27,6 @@ private:
     void initVertexBufferForLaterUse();
     void initAttributeVariable(GLuint arrtibute, GLint num, GLuint buffer);
     void draw();
-    GLfloat* getMatrixElements(mat4 matrix);
     
 private:
     QOpenGLShaderProgram* program;  
@@ -40,11 +34,9 @@ private:
     GLuint numRectVertex, rectVerticesBuffer;
     GLuint numColor, redColorBuffer, greenColorBuffer, blueColorBuffer;
 
-    // use algebra-matrix for 3D Transformation
-    mat4 M; 
-    stack<mat4> matrixStack;
-    static GLfloat transformMatrix[16];
-
+    // use qt-opengl for 3D Transformation
+    QMatrix4x4 transformMatrix;
+    QVector<QMatrix4x4> matrixStack;
 };
 
 #endif // GLWIDGET_H

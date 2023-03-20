@@ -121,27 +121,30 @@ void glWidget::draw()
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    M = identity3D();
-    M = M * translation3D(vec3(0.0, -0.5, 0.0)) ;    
-    matrixStack.push(M);
-    M = M * scaling3D(vec3(1.0, 0.4, 0.0));
-    glUniformMatrix4fv(uModelMatrix, 1, GL_TRUE, getMatrixElements(M)); //pass current transformMat to shader
+    transformMatrix.setToIdentity();
+    transformMatrix.translate(QVector3D(0.0f, -0.5f, 0.0f));
+    matrixStack.push_back(transformMatrix);
+    transformMatrix.scale(QVector3D(1.0f, 0.4f, 0.0f));    
+    glUniformMatrix4fv(uModelMatrix, 1, GL_FALSE, transformMatrix.data()); //pass current transformMat to shader
     glDrawArrays(GL_TRIANGLE_STRIP, 0, numRectVertex / 2);
 
-    M = matrixStack.top();    
-    matrixStack.pop();
+    transformMatrix = matrixStack.front();
+    matrixStack.pop_back();    
     initAttributeVariable(aColor, 3, redColorBuffer); //set rect red color to shader varibale
-    M = M * translation3D(vec3(0.0, 0.2, 0.0)) * rotation3D(vec3(0.0, 0.0, 1.0), -20) * translation3D(vec3(0.0, 0.5, 0.0));
-    matrixStack.push(M);
-    M = M * scaling3D(vec3(0.2, 1.2, 0.0));
-    glUniformMatrix4fv(uModelMatrix, 1, GL_TRUE, getMatrixElements(M)); //pass current transformMat to shader
+    transformMatrix.translate(QVector3D(0.0f, 0.2f, 0.0f));
+    transformMatrix.rotate(-20, QVector3D(0.0f, 0.0f, 1.0f)); // rotate(degree, axis)
+    transformMatrix.translate(QVector3D(0.0f, 0.5f, 0.0f));
+    matrixStack.push_back(transformMatrix);
+    transformMatrix.scale(QVector3D(0.2f, 1.2f, 0.0f));   
+    glUniformMatrix4fv(uModelMatrix, 1, GL_FALSE, transformMatrix.data()); //pass current transformMat to shader
     glDrawArrays(GL_TRIANGLE_STRIP, 0, numRectVertex / 2);      
 
-    M = matrixStack.top();
-    matrixStack.pop();
+    transformMatrix = matrixStack.front();
+    matrixStack.pop_back();
     initAttributeVariable(aColor, 3, greenColorBuffer); //set rect green color to shader varibale
-    M = M * translation3D(vec3(0.2, 0.5, 0.0)) * scaling3D(vec3(0.6, 0.15, 0.0)) ;
-    glUniformMatrix4fv(uModelMatrix, 1, GL_TRUE, getMatrixElements(M)); //pass current transformMat to shader
+    transformMatrix.translate(QVector3D(0.2f, 0.5f, 0.0f));
+    transformMatrix.scale(QVector3D(0.6f, 0.15f, 0.0f));
+    glUniformMatrix4fv(uModelMatrix, 1, GL_FALSE, transformMatrix.data()); //pass current transformMat to shader
     glDrawArrays(GL_TRIANGLE_STRIP, 0, numRectVertex / 2);
     update();
 }
@@ -151,20 +154,4 @@ void glWidget::initAttributeVariable(GLuint arrtibute, GLint num, GLuint buffer)
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
     glVertexAttribPointer(arrtibute, num, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(arrtibute);
-}
-
-// static declaration initial value
-GLfloat  glWidget::transformMatrix[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-GLfloat* glWidget::getMatrixElements(mat4 matrix)
-{
-    // pass matrix elements to openGL Matrix   
-    int k = 0;
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            transformMatrix[k] = matrix[i][j];
-            k++;
-        }
-    }
-
-    return transformMatrix;
 }
