@@ -8,10 +8,6 @@
 #include <QOpenGLVertexArrayObject>
 #include <QMouseEvent>
 
-#include "algebra3.h"
-#include <vector>
-using namespace std;
-
 class glWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
     Q_OBJECT
@@ -34,9 +30,9 @@ protected:
     void mousePressEvent(QMouseEvent* event);
 
 private:
-    QOpenGLShaderProgram* program;    
-    vector<vec2> gPoints; // store all clicked positions
-    vector<vec4> gColors; // store colors of each points
+    QOpenGLShaderProgram* program;        
+    QVector<QVector2D> gPoints; // store all clicked positions
+    QVector<QVector4D> gColors; // store colors of each points
 };
 
 #endif // GLWIDGET_H

@@ -140,37 +140,25 @@ void glWidget::draw()
     glClear(GL_COLOR_BUFFER_BIT);
 
     ////////////// Begin: draw the rotating green triangle
-    M1 = identity3D(); //set identity matrix to transformMat
+    transformMatrix.setToIdentity(); //set identity matrix to transformMat
     ///******TODO: you can multiple transformMat.translate() and transformMat.rotate() to make the rotating grenn triangle
     triangleAngle++;
-    M1 = rotation3D(vec3(0.0, 0.0, 1.0), pointAngle) * translation3D(vec3(0.0, -0.2, 0.0))  *  M1;
-    M1 = rotation3D(vec3(0.0, 0.0, 1.0), triangleAngle) * translation3D(vec3(0.0, 0.4, 0.0))  * M1;
-   
-    //// pass M elements to openGL Matrix
-    GLfloat greenTriangleMatrix[] = {
-            M1[VX][0], M1[VX][1], M1[VX][2], M1[VX][3],
-            M1[VY][0], M1[VY][1], M1[VY][2], M1[VY][3],
-            M1[VZ][0], M1[VZ][1], M1[VZ][2], M1[VZ][3],
-            M1[VW][0], M1[VW][1], M1[VW][2], M1[VW][3]
-    };    
+    transformMatrix.rotate(pointAngle, QVector3D(0.0f, 0.0f, 1.0f)); // rotate(degree, axis)
+    transformMatrix.translate(QVector3D(0.0f, 0.4f, 0.0f));
+    transformMatrix.rotate(triangleAngle, QVector3D(0.0f, 0.0f, 1.0f)); // rotate(degree, axis)
+    transformMatrix.translate(QVector3D(0.0f, -0.2f, 0.0f));
     //Note: You are NOT Allowed to change the following code
     initAttributeVariable(aPosition, 3, vertTriangleBuffer); //set triangle  vertex to shader varibale
     initAttributeVariable(aColor, 3, colTriangleBuffer); //set triangle  color to shader varibale
-    glUniformMatrix4fv(uModelMatrix, 1, GL_TRUE, greenTriangleMatrix); //pass current transformMat to shader
+    glUniformMatrix4fv(uModelMatrix, 1, GL_FALSE, transformMatrix.data()); //pass current transformMat to shader
     glDrawArrays(GL_TRIANGLES, 0, numTriangle / 3);
     ////////////// END: draw the rotating green triangle
     
     //// Begin: draw the center white point
-    M2 = identity3D(); //set identity matrix to transformMat
-    GLfloat whitePointMatrix[] = {
-        M2[VX][0], M2[VX][1], M2[VX][2], M2[VX][3],
-        M2[VY][0], M2[VY][1], M2[VY][2], M2[VY][3],
-        M2[VZ][0], M2[VZ][1], M2[VZ][2], M2[VZ][3],
-        M2[VW][0], M2[VW][1], M2[VW][2], M2[VW][3]
-    };   
+    transformMatrix.setToIdentity(); //set identity matrix to transformMat  
     initAttributeVariable(aPosition, 3, vertCenterPointBuffer); //set center point vertex to shader varibale
     initAttributeVariable(aColor, 3, colCenterPointBuffer); //set center point color into shader varibale
-    glUniformMatrix4fv(uModelMatrix, 1, GL_TRUE, whitePointMatrix); //pass current transformMat to shader
+    glUniformMatrix4fv(uModelMatrix, 1, GL_FALSE, transformMatrix.data()); //pass current transformMat to shader
     glEnable(GL_PROGRAM_POINT_SIZE);
     glDrawArrays(GL_POINTS, 0, numCenterPoint / 3);
     //// END: draw the center white point
@@ -178,18 +166,12 @@ void glWidget::draw()
     /////////******Suggestion: read the following code and understand what's going on here (about the transofmation) 
     //// Begin: draw the rotating red point
     pointAngle++; //rotating angle of the red point
-    M3 = identity3D(); //set identity matrix to transformMat
-    M3 = translation3D(vec3(0.0, 0.4, 0.0)) * M3; //vec3(9.075, 9.075, 0.0)
-    M3 = rotation3D(vec3(0.0, 0.0, 1.0), pointAngle)  * M3;
-    GLfloat redPointMatrix[] = {
-        M3[VX][0], M3[VX][1], M3[VX][2], M3[VX][3],
-        M3[VY][0], M3[VY][1], M3[VY][2], M3[VY][3],
-        M3[VZ][0], M3[VZ][1], M3[VZ][2], M3[VZ][3],
-        M3[VW][0], M3[VW][1], M3[VW][2], M3[VW][3]
-    };
+    transformMatrix.setToIdentity(); //set identity matrix to transformMat
+    transformMatrix.rotate(pointAngle, QVector3D(0.0f, 0.0f, 1.0f)); // rotate(degree, axis)
+    transformMatrix.translate(QVector3D(0.0f, 0.4f, 0.0f));
     initAttributeVariable(aPosition, 3, vertRotatingPointBuffer); //set rotating point vertex to shader varibale
     initAttributeVariable(aColor, 3, colRotatingPointBuffer); //set rotating point color to shader varibale
-    glUniformMatrix4fv(uModelMatrix, 1, GL_TRUE, redPointMatrix); //pass current transformMat to shader
+    glUniformMatrix4fv(uModelMatrix, 1, GL_FALSE, transformMatrix.data()); //pass current transformMat to shader
     glEnable(GL_PROGRAM_POINT_SIZE);
     glDrawArrays(GL_POINTS, 0, numRotatingPoint / 3);
     //// END: draw the rotating red point

@@ -64,8 +64,8 @@ void glWidget::paintGL()
     // TODO-3: draw all points in "g_points" one-by-one
     int len = gPoints.size();
     for (int i = 0; i < len; i++) {
-        vec2 xy = gPoints[i];
-        vec4 rgba = gColors[i];
+        QVector2D xy = gPoints[i];
+        QVector4D rgba = gColors[i];
         glUniform4f(uPosition, xy[0], xy[1], 0.0, 1.0); //TODO: pass position of a point into shader to draw
         glUniform4f(uFragColor, rgba[0], rgba[1], rgba[2], rgba[3]); //TODO: pass color of a point into shader to draw
         glEnable(GL_PROGRAM_POINT_SIZE);
@@ -98,20 +98,20 @@ void glWidget::mousePressEvent(QMouseEvent* event)
     float x = (float)clickPos.x() / (float)this->width() * 2.0 - 1.0;    
     float y = -((float)clickPos.y() / (float)this->height()) * 2.0 + 1.0;
     //put mouse click position to g_points
-    gPoints.push_back(vec2(x, y));
+    gPoints.push_back(QVector2D(x, y));
     
     //Todo-2: calculate color of the point
     if (x >= 0 && y > 0) {
-        gColors.push_back(vec4(1.0, 0.0, 0.0, 1.0)); //red
+        gColors.push_back(QVector4D(1.0, 0.0, 0.0, 1.0)); //red
     }
     else if (x < 0 && y < 0) {
-        gColors.push_back(vec4(0.0, 1.0, 0.0, 1.0)); //green
+        gColors.push_back(QVector4D(0.0, 1.0, 0.0, 1.0)); //green
     }
     else if (x < 0 && y >= 0) {
-        gColors.push_back(vec4(0.0, 0.0, 1.0, 1.0)); //blue
+        gColors.push_back(QVector4D(0.0, 0.0, 1.0, 1.0)); //blue
     }
     else {
-        gColors.push_back(vec4(1.0, 1.0, 1.0, 1.0)); //white
+        gColors.push_back(QVector4D(1.0, 1.0, 1.0, 1.0)); //white
     }
 
     // Clear glwidget by background color before drawing

@@ -162,47 +162,49 @@ void glWidget::redraw()
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    M = identity3D();
+    transformMatrix.setToIdentity(); //set identity matrix to transformMat
     //TODO-1: translate whole robot here
-    M = M * translation3D(vec3(tx, 0.0, 0.0)); // add
-    M = M * translation3D(vec3(0.0, -0.5, 0.0)) ;    
-    matrixStack.push(M);
-    M = M * scaling3D(vec3(1.0, 0.4, 0.0));
-    glUniformMatrix4fv(uModelMatrix, 1, GL_TRUE, getMatrixElements(M)); //pass current transformMat to shader
+    transformMatrix.translate(QVector3D(tx, 0.0f, 0.0f));
+    transformMatrix.translate(QVector3D(0.0f, -0.5f, 0.0f));
+    matrixStack.push_back(transformMatrix);
+    transformMatrix.scale(QVector3D(1.0f, 0.4f, 0.0f));
+    glUniformMatrix4fv(uModelMatrix, 1, GL_FALSE, transformMatrix.data()); //pass current transformMat to shader
     glDrawArrays(GL_TRIANGLE_STRIP, 0, numRectVertex / 2); //draw the blue one
 
-    M = matrixStack.top();    
-    matrixStack.pop();
+    transformMatrix = matrixStack.front();
+    matrixStack.pop_back();
     initAttributeVariable(aColor, 3, redColorBuffer); //set rect red color to shader varibale
     //TODO-2: make the red arm rotate
-    M = M * translation3D(vec3(0.0, 0.2, 0.0)) * rotation3D(vec3(0.0, 0.0, 1.0), redAngle) * translation3D(vec3(0.0, 0.5, 0.0));
-    matrixStack.push(M);
-    M = M * scaling3D(vec3(0.2, 1.2, 0.0));
-    glUniformMatrix4fv(uModelMatrix, 1, GL_TRUE, getMatrixElements(M)); //pass current transformMat to shader
+    transformMatrix.translate(QVector3D(0.0f, 0.2f, 0.0f));
+    transformMatrix.rotate(redAngle, QVector3D(0.0f, 0.0f, 1.0f)); // rotate(degree, axis)
+    transformMatrix.translate(QVector3D(0.0f, 0.5f, 0.0f));
+    matrixStack.push_back(transformMatrix);
+    transformMatrix.scale(QVector3D(0.2f, 1.2f, 0.0f));    
+    glUniformMatrix4fv(uModelMatrix, 1, GL_FALSE, transformMatrix.data()); //pass current transformMat to shader
     glDrawArrays(GL_TRIANGLE_STRIP, 0, numRectVertex / 2); //draw the red one       
 
-    M = matrixStack.top();
-    matrixStack.pop();
+    transformMatrix = matrixStack.front();
+    matrixStack.pop_back();
     initAttributeVariable(aColor, 3, greenColorBuffer); //set rect green color to shader varibale
     //TODO-3: you may add some functions here 
     //        and modify translate() in next line to rotate the green bar
-    M = M * translation3D(vec3(0.0, 0.5, 0.0));
-    M = M * rotation3D(vec3(0.0, 0.0, 1.0), greenAngle); // add
-    M = M * translation3D(vec3(0.2, 0.0, 0.0));   
-    matrixStack.push(M);
-    M = M * scaling3D(vec3(0.6, 0.15, 0.0));   
-    glUniformMatrix4fv(uModelMatrix, 1, GL_TRUE, getMatrixElements(M)); //pass current transformMat to shader
+    transformMatrix.translate(QVector3D(0.0f, 0.5f, 0.0f));
+    transformMatrix.rotate(greenAngle, QVector3D(0.0f, 0.0f, 1.0f)); // rotate(degree, axis)
+    transformMatrix.translate(QVector3D(0.2f, 0.0f, 0.0f));
+    matrixStack.push_back(transformMatrix);
+    transformMatrix.scale(QVector3D(0.6f, 0.15f, 0.0f));  
+    glUniformMatrix4fv(uModelMatrix, 1, GL_FALSE, transformMatrix.data()); //pass current transformMat to shader
     glDrawArrays(GL_TRIANGLE_STRIP, 0, numRectVertex / 2); //draw the green one
 
     //TODO-4: add code here to draw and rotate the yelloe block
-    M = matrixStack.top();
-    matrixStack.pop();
+    transformMatrix = matrixStack.front();
+    matrixStack.pop_back();
     initAttributeVariable(aColor, 3, yellowColorBuffer); //set rect yellow color to shader varibale
-    M = M * translation3D(vec3(0.25, 0.0, 0.0));
-    M = M * rotation3D(vec3(0.0, 0.0, 1.0), yellowAngle); 
-    M = M * translation3D(vec3(0.0, -0.15, 0.0));
-    M = M * scaling3D(vec3(0.1, 0.45, 0.0));
-    glUniformMatrix4fv(uModelMatrix, 1, GL_TRUE, getMatrixElements(M)); //pass current transformMat to shader
+    transformMatrix.translate(QVector3D(0.25f, 0.0f, 0.0f));
+    transformMatrix.rotate(yellowAngle, QVector3D(0.0f, 0.0f, 1.0f)); // rotate(degree, axis)
+    transformMatrix.translate(QVector3D(0.0f, -0.15f, 0.0f));
+    transformMatrix.scale(QVector3D(0.1f, 0.45f, 0.0f));
+    glUniformMatrix4fv(uModelMatrix, 1, GL_FALSE, transformMatrix.data()); //pass current transformMat to shader
     glDrawArrays(GL_TRIANGLE_STRIP, 0, numRectVertex / 2); //draw the green one
 
     update();
@@ -213,20 +215,4 @@ void glWidget::initAttributeVariable(GLuint arrtibute, GLint num, GLuint buffer)
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
     glVertexAttribPointer(arrtibute, num, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(arrtibute);
-}
-
-// static declaration initial value
-GLfloat  glWidget::transformMatrix[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-GLfloat* glWidget::getMatrixElements(mat4 matrix)
-{
-    // pass matrix elements to openGL Matrix   
-    int k = 0;
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            transformMatrix[k] = matrix[i][j];
-            k++;
-        }
-    }
-
-    return transformMatrix;
 }
