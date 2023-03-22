@@ -69,9 +69,15 @@ void glWidget::paintGL()
 
     frontViewMatrix = QMatrix4x4();
     pespProjMatrix = QMatrix4x4();
+    orthProjMatrix = QMatrix4x4();
+    topPespProjMatrix = QMatrix4x4();
+    backViewMatrix = QMatrix4x4();
     frontViewMatrix.lookAt(QVector3D(0, 0, -10), QVector3D(0, 0, 100), QVector3D(0, 1, 0)); // lookAt(eye, center, up)
     pespProjMatrix.perspective(30, this->width() / this->height(), 1, 100); // perspective(verticalAngel, aspectRatio, nearPlane, farPlane)   
-
+    orthProjMatrix.ortho(-this->width() / (this->height() / 2), this->width() / (this->height() / 2), -this->width() / (this->height() / 2), this->width() / (this->height() / 2), -20.0f, 20.0f); // ortho(left, right, bottom, up, nearPlane, farPlane)
+    topPespProjMatrix.perspective(30, this->width() / (this->height() / 2), 1, 100); // perspective(verticalAngel, aspectRatio, nearPlane, farPlane)   
+    backViewMatrix.lookAt(QVector3D(0, 0, 10), QVector3D(0, 0, -100), QVector3D(0, 1, 0)); // lookAt(eye, center, up)
+    
     draw();
 
     // Release shader program
@@ -200,11 +206,24 @@ void glWidget::draw()
     modelMatrix1.rotate(-angleY, 1, 0, 0); // rotate(degree, axis)
     modelMatrix1.rotate(angleX, 0, 1, 0);
     modelMatrix1.translate(QVector3D(0.75f, 0.0f, 0.0f));
+    modelMatrix2.setToIdentity();
+    modelMatrix2.rotate(-angleY, 1, 0, 0); // rotate(degree, axis)
+    modelMatrix2.rotate(angleX, 0, 1, 0);
+    modelMatrix2.translate(QVector3D(-0.75f, 0.0f, 0.0f));
 
     //this only draw one set of triangles because we pass "QMatrix4x4()" for the last argument
+    // (1) [left bottom] front side with perspective camera model
     drawOneViewport(0, 0, this->width() / 2 , this->height() / 2 , //viewportX, viewportY, viewportWidth, viewportHeight,
         0, 0, 0, // bgColorR, bgColorG, bgColorB,
-        pespProjMatrix, frontViewMatrix, modelMatrix1, QMatrix4x4());  // projMatrix, viewMatrix, modelMatrixTriangleSet1, modelMatrixTriangleSet2
+        pespProjMatrix, frontViewMatrix, modelMatrix1, modelMatrix2);  // projMatrix, viewMatrix, modelMatrixTriangleSet1, modelMatrixTriangleSet2
+    // (2) [right bottom] front side with orthographic camera model
+    drawOneViewport(this->width() / 2, 0, this->width() / 2, this->height() / 2, //viewportX, viewportY, viewportWidth, viewportHeight,
+        0.4, 0.4, 0.4, // bgColorR, bgColorG, bgColorB,
+        orthProjMatrix, frontViewMatrix, modelMatrix1, modelMatrix2);  // projMatrix, viewMatrix, modelMatrixTriangleSet1, modelMatrixTriangleSet2
+    // (3) [top view] back side with perspective camera model
+    drawOneViewport(0, this->height() / 2, this->width(), this->height() / 2, //viewportX, viewportY, viewportWidth, viewportHeight,
+        0.8, 0.8, 0.8, // bgColorR, bgColorG, bgColorB,
+        topPespProjMatrix, backViewMatrix, modelMatrix1, modelMatrix2);  // projMatrix, viewMatrix, modelMatrixTriangleSet1, modelMatrixTriangleSet2
 }
 
 void glWidget::drawOneViewport(float viewportX, float viewportY, float viewportWidth, float viewportHeight, 

@@ -18,10 +18,6 @@ public:
     glWidget(QWidget *parent = nullptr);
     ~glWidget();
 
-signals:
-
-public slots:
-
 protected:
     void initializeGL() override;
     void paintGL() override;
@@ -49,7 +45,7 @@ private:
 
     QMatrix4x4 transformMatrix;
     QMatrix4x4 modelMatrix1, frontViewMatrix, pespProjMatrix;  // use qt-opengl framework for 3D space Transformation
-
+    QMatrix4x4 modelMatrix2, backViewMatrix, orthProjMatrix, topPespProjMatrix;
     float mouseLastX, mouseLastY;
     bool mouseDragging = false;
     float angleX = 0.0, angleY = 0.0;
