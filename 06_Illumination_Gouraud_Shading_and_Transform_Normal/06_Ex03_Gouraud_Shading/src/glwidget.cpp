@@ -36,7 +36,7 @@ const char* vertexShaderSource =
 "    if(nDotL > 0.0) {                                                      \n"
 "       vec3 R = reflect(-lightDirection, normal);                          \n"
 "       // V : the vector, point to viewer                                  \n"
-"       vec3 V = normalize(-uViewPosition - positionInWorld);               \n"
+"       vec3 V = normalize(uViewPosition - positionInWorld);               \n"
 "       float specAngle = clamp(dot(R, V), 0.0, 1.0);                       \n"  // cos𝜙 = 𝑅∙𝑉 : angle between V and R
 "       specular = specularLightColor * uKs * pow(specAngle, uShininess);   \n"  // 𝑆𝑝𝑒𝑐𝑢𝑙𝑎𝑟 = 𝐾𝑠 ∗ 𝐼𝑠 ∗ cos𝑛(𝜙)
 "    }                                                                      \n"
