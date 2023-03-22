@@ -37,6 +37,7 @@ protected:
 private:
     void initVertexBufferForLaterUse();
     void initAttributeVariable(GLuint arrtibute, GLint num, GLuint buffer);
+
     void draw();
     void drawOneViewport(float viewportX, float  viewportY, float  viewportWidth, float  viewportHeight, float bgColorR, float bgColorG, float bgColorB,
                          const QMatrix4x4 projMatrix, const QMatrix4x4 viewMatrix, const QMatrix4x4 modelMatrixTriangleSet1, const QMatrix4x4 modelMatrixTriangleSet2);

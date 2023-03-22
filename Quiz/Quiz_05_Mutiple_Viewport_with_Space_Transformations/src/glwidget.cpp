@@ -96,6 +96,7 @@ QSize glWidget::sizeHint() const
 
 void glWidget::mousePressEvent(QMouseEvent* event)
 {    
+
     setCursor(Qt::OpenHandCursor);
     QPoint clickPos = event->pos();
     float x = (float)clickPos.x();
@@ -112,11 +113,13 @@ void glWidget::mouseReleaseEvent(QMouseEvent* event)
 {
     mouseDragging = false;
     setCursor(Qt::ArrowCursor);
+
 }
 
 void glWidget::mouseMoveEvent(QMouseEvent* event)
 {
     QPoint clickPos = event->pos();
+
     float x = (float)clickPos.x();
     float y = (float)clickPos.y();
     if (mouseDragging) {
@@ -131,6 +134,7 @@ void glWidget::mouseMoveEvent(QMouseEvent* event)
     mouseLastY = y;
 
     draw();       
+
 }
 
 void glWidget::initVertexBufferForLaterUse()
@@ -188,6 +192,7 @@ void glWidget::initAttributeVariable(GLuint arrtibute, GLint num, GLuint buffer)
     glEnableVertexAttribArray(arrtibute);
 }
 
+
 void glWidget::draw()
 {
     //call drawOneViewPort three times to draw the three views
@@ -216,14 +221,16 @@ void glWidget::drawOneViewport(float viewportX, float viewportY, float viewportW
 
     //draw a set of triangles
     transformMatrix = projMatrix * viewMatrix * modelMatrixTriangleSet1;
+   
     initAttributeVariable(aPosition, 3, vertexBuffer);
     initAttributeVariable(aColor, 3, colorBuffer);
     glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, transformMatrix.data()); //pass current model-view-projection Matrix to shader
     glDrawArrays(GL_TRIANGLES, 0, numVertices);
-    
+  
     if (modelMatrixTriangleSet2 != QMatrix4x4()) { //if we have the second modelMatrix
         //draw the second set of triangles
         transformMatrix = projMatrix * viewMatrix * modelMatrixTriangleSet2;
+
         initAttributeVariable(aPosition, 3, vertexBuffer);
         initAttributeVariable(aColor, 3, colorBuffer);
         glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, transformMatrix.data()); //pass current model-view-projection Matrix to shader
@@ -231,6 +238,7 @@ void glWidget::drawOneViewport(float viewportX, float viewportY, float viewportW
     }
 
     update();
+
 }
 
 
