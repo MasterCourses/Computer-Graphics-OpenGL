@@ -12,10 +12,14 @@ const char* vertexShaderSource =
 "varying vec4 vColor;                                                                                                   \n"
 "void main(){                                                                                                           \n"
 "   //TODO-1: transform 'aPosition' to clip space and store in 'gl_Position'                                            \n"
+"    gl_Position = uMVPMatrix * aPosition;                                                                              \n"
 "   //TODO-2: transform 'aPosition' to world space and store its first three elements to 'vPositionInWorld'             \n"
+"    vPositionInWorld = (uModelMatrix * aPosition).xyz;                                                                 \n"
 "   //TODO-3: transform normal vector 'aNormal' to world space using 'uNormalMatrix' and store the result in 'vNormal', \n"
 "   //        remember to renormalize the result before storing it to vNormal                                           \n"
+"    vNormal = normalize((uNormalMatrix * aNormal).xyz);                                                                \n"  // N : surface normal vector (use correct normal matrix)
 "   //TODO-4: set 'aColor' to 'vColor'                                                                                  \n"
+"    vColor = aColor;                                                                                                   \n"
 "}                                                                                                                      \n";
 
 const char* fragmentShaderSource =
@@ -38,27 +42,33 @@ const char* fragmentShaderSource =
 "    vec3 specularLightColor = vec3(1.0, 1.0, 1.0);                                                                     \n" // Is : specular light intensity
 "                                                                                                                       \n"
 "    // TODO-5: calculate ambient light color using 'ambientLightColor' and 'uKa'                                       \n"
-"                                                                                                                       \n"
+"    vec3 ambient = ambientLightColor * uKa;                                                                            \n" // Ambient = 𝑰𝒂 * 𝑲𝒂
 "                                                                                                                       \n"
 "                                                                                                                       \n" // normalize the v_Normal before using it,
 "   vec3 normal = normalize(vNormal);                                                                                   \n" // before it comes from normal vectors interpolation
 "                                                                                                                       \n"
 "   // TODO-6: calculate diffuse light color using 'normal', 'uLightPosition'                                           \n"
 "   //                                             ,'vPositionInWorld', 'diffuseLightColor', and 'uKd'                  \n"
-"                                                                                                                       \n"
+"    vec3 lightDirection = normalize(uLightPosition - vPositionInWorld);                                                \n"  // L : for diffuse light calculation
+"    float nDotL = max(dot(lightDirection, normal), 0.0);                                                               \n"  // cos(θ) = L • N
+"    vec3 diffuse = diffuseLightColor * uKd * nDotL;                                                                    \n"  // 𝐷𝑖𝑓𝑓𝑢𝑠𝑒 = 𝐾𝑑 ∗ 𝐼𝑑 ∗ cos(𝜃)  
 "    vec3 specular = vec3(0.0, 0.0, 0.0);                                                                               \n"
 "    if(nDotL > 0.0) {                                                                                                  \n"
 "       //TODO-7: calculate specular light color using 'normal', 'uLightPosition',                                      \n"
 "       //                                             'vPositionInWorld',  'uViewPosition', 'uShininess',              \n"
 "       //                                             'specularLightColor', and 'uKs'                                  \n"
 "       //You probably can store the result of specular calculation into 'specular' variable                            \n"
-
+"       vec3 R = reflect(-lightDirection, normal);                                                                      \n"
+"       // V : the vector, point to viewer                                                                              \n"
+"       vec3 V = normalize(uViewPosition - vPositionInWorld);                                                           \n"
+"       float specAngle = clamp(dot(R, V), 0.0, 1.0);                                                                   \n"  // cos𝜙 = 𝑅∙𝑉 : angle between V and R
+"       specular = specularLightColor * uKs * pow(specAngle, uShininess);                                               \n"  // 𝑆𝑝𝑒𝑐𝑢𝑙𝑎𝑟 = 𝐾𝑠 ∗ 𝐼𝑠 ∗ cos𝑛(𝜙)
 "    }                                                                                                                  \n"
 "                                                                                                                       \n"
 "                                                                                                                       \n"
 "   //TODO-8: sum up ambient, diffuse, specular light color from above calculation                                      \n"
 "   //        and put them into 'gl_FragColor'                                                                          \n"
-"	gl_FragColor = ???;                                                                                                 \n"
+"	gl_FragColor = vec4( ambient + diffuse + specular, 1.0);                                                            \n"
 "}                                                                                                                      \n";
 
 glWidget::glWidget(QWidget* parent)
