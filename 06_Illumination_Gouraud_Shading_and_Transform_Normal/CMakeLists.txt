@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(Tutorial VERSION 0.1)
+project(06_Illumination_Gouraud_Shading_and_Transform_Normal VERSION 0.1)
 
 #======================= INCLUSION OF Qt =======================#
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -21,9 +21,7 @@ find_package(Qt5OpenGL REQUIRED)
 find_package(Qt5Xml REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 
-add_subdirectory(01_Introduction)
-add_subdirectory(02_VBO)
-add_subdirectory(03_Transformation)
-add_subdirectory(04_Hierachical_Transformation)
-add_subdirectory(05_Space_Transformation_Pipeline)
-add_subdirectory(06_Illumination_Gouraud_Shading_and_Transform_Normal)
+add_subdirectory(06_Ex01_Ambient)
+add_subdirectory(06_Ex02_Ambient_and_Diffuse)
+add_subdirectory(06_Ex03_Gouraud_Shading)
+add_subdirectory(06_Ex04_Transform_Normal)

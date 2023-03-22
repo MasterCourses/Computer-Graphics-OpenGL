@@ -1,0 +1,217 @@
+#include "glwidget.h"
+
+const char* vertexShaderSource =
+"attribute vec4 aPosition;                                              \n"
+"attribute vec4 aColor;                                                 \n"
+"uniform mat4 uMVPMatrix;                                               \n"
+"uniform float uKa;                                                     \n"
+"varying vec4 vColor;                                                   \n"
+"void main()                                                            \n"
+"{                                                                      \n"
+"    // let ambient color are v_Color                                   \n"
+"    // (you can also input them from ouside and make it different)     \n"
+"    vec3 ambientLightColor = aColor.rgb;                               \n"
+"    gl_Position = uMVPMatrix * aPosition;                              \n"
+"    vec3 ambient = ambientLightColor * uKa;                            \n"
+"    vColor = vec4( ambient, 1.0);                                      \n"
+"}                                                                      \n";
+
+const char* fragmentShaderSource =
+"varying vec4 vColor;                                                   \n"
+"void main()                                                            \n"
+"{                                                                      \n"
+"	gl_FragColor = vColor;                                              \n"
+"}                                                                      \n";
+
+glWidget::glWidget(QWidget *parent)
+    : QOpenGLWidget(parent)
+{
+    setMouseTracking(true);
+}
+
+glWidget::~glWidget()
+{
+
+}
+
+void glWidget::initializeGL()
+{
+    // initialize env
+    this->initializeOpenGLFunctions(); 
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // set background color is black
+ 
+    // Create and Compile : vertex/frag shader
+    QOpenGLShader* vertexShader = new QOpenGLShader(QOpenGLShader::Vertex);
+    vertexShader->compileSourceCode(vertexShaderSource);
+    QOpenGLShader* fragmentShader = new QOpenGLShader(QOpenGLShader::Fragment);
+    fragmentShader->compileSourceCode(fragmentShaderSource);
+
+    // Create shader program
+    program = new QOpenGLShaderProgram(this);
+    // Attach shader to program
+    program->addShader(vertexShader);
+    program->addShader(fragmentShader);
+    // link shader to program
+    program->link();
+
+}
+
+void glWidget::paintGL()
+{
+    // Activate shader program
+    program->bind();
+
+    /////prepare attribute reference of the shader
+    aPosition = glGetAttribLocation(program->programId(), "aPosition");
+    aColor = glGetAttribLocation(program->programId(), "aColor");
+    uMVPMatrix = glGetUniformLocation(program->programId(), "uMVPMatrix"); // set the Uniform attribute for MVP Matrix 
+    uKa = glGetUniformLocation(program->programId(), "uKa"); // set the Uniform attribute for ambient reflection coefficient Ka (0 <= Ka <= 1) 
+
+    /////create vertex buffer of triangle, color for later use
+    initVertexBufferForLaterUse();
+
+    glEnable(GL_DEPTH_TEST);
+
+    modelMatrix = QMatrix4x4();
+    mvpMatrix = QMatrix4x4();    
+    
+    draw();
+
+    // Release shader program
+    program->release();
+      
+}
+
+void glWidget::resizeGL(int w, int h)
+{
+    glViewport(-w / 2, w / 2, h / 2, -h / 2);   
+}
+
+QSize glWidget::minimumSizeHint() const
+{
+    return QSize(100, 100);
+}
+
+QSize glWidget::sizeHint() const
+{
+    return QSize(800, 800);
+}
+
+void glWidget::mousePressEvent(QMouseEvent* event)
+{    
+
+    setCursor(Qt::OpenHandCursor);
+    QPoint clickPos = event->pos();
+    float x = (float)clickPos.x();
+    float y = (float)clickPos.y();
+    QRect rect = this->geometry();
+    if (rect.left() <= x && x < rect.right() && rect.top() <= y && y < rect.bottom()) {
+        mouseLastX = x;
+        mouseLastY = y;
+        mouseDragging = true;
+    }
+}
+
+void glWidget::mouseReleaseEvent(QMouseEvent* event)
+{
+    mouseDragging = false;
+    setCursor(Qt::ArrowCursor);
+
+}
+
+void glWidget::mouseMoveEvent(QMouseEvent* event)
+{
+    QPoint clickPos = event->pos();
+
+    float x = (float)clickPos.x();
+    float y = (float)clickPos.y();
+    if (mouseDragging) {
+        setCursor(Qt::ClosedHandCursor);
+        float dx = (x - mouseLastX) / 10.0 * M_PI;
+        float dy = (y - mouseLastY) / 10.0 * M_PI;
+
+        angleX += dx; //yes, x for y, y for x, this is right
+        angleY += dy;
+    }
+    mouseLastX = x;
+    mouseLastY = y;
+
+    draw();       
+
+}
+
+void glWidget::initVertexBufferForLaterUse()
+{
+    // each face of a cube is divided into 2 triangles
+    numVertices = (3 * 6) * 6 / 3; // 6 faces (each face has 2 triagnles) (each triangle has 3 vertices)
+
+    GLfloat  vertices[] = { // cube
+            1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, //front
+            1.0, 1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, //right
+            1.0, 1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, //up
+            -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, //left
+            -1.0, -1.0, 1.0, -1.0, -1.0, -1.0, 1.0, -1.0, -1.0,  1.0, -1.0, -1.0, 1.0, -1.0, 1.0, -1.0, -1.0, 1.0, //bottom
+            1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0 //back
+    };
+
+    GLfloat colors[] = {   //cube's color
+            0.4, 0.4, 1.0, 0.4, 0.4, 1.0, 0.4, 0.4, 1.0, 0.4, 0.4, 1.0, 0.4, 0.4, 1.0, 0.4, 0.4, 1.0, //front
+            0.4, 1.0, 0.4, 0.4, 1.0, 0.4, 0.4, 1.0, 0.4, 0.4, 1.0, 0.4, 0.4, 1.0, 0.4, 0.4, 1.0, 0.4, //right
+            1.0, 0.4, 0.4, 1.0, 0.4, 0.4, 1.0, 0.4, 0.4, 1.0, 0.4, 0.4, 1.0, 0.4, 0.4, 1.0, 0.4, 0.4, //up
+            1.0, 0.4, 1.0, 1.0, 0.4, 1.0, 1.0, 0.4, 1.0, 1.0, 0.4, 1.0, 1.0, 0.4, 1.0, 1.0, 0.4, 1.0, //left
+            1.0, 1.0, 0.4, 1.0, 1.0, 0.4, 1.0, 1.0, 0.4, 1.0, 1.0, 0.4, 1.0, 1.0, 0.4, 1.0, 1.0, 0.4, //bottom
+            0.4, 1.0, 1.0, 0.4, 1.0, 1.0, 0.4, 1.0, 1.0, 0.4, 1.0, 1.0, 0.4, 1.0, 1.0, 0.4, 1.0, 1.0, //back
+    };
+
+    GLfloat normals[] = {   //cube's normal
+        0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, //front
+        1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, //right
+        0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, //up
+        -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, //left
+        0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, //bottom
+        0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0 //back
+    };
+
+    // initArrayBuffer
+    glGenBuffers(1, &vertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    initAttributeVariable(aPosition, 3, vertexBuffer);
+    glGenBuffers(1, &colorBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
+    initAttributeVariable(aColor, 3, colorBuffer);
+
+    glBindBuffer(GL_ARRAY_BUFFER, NULL);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, NULL);
+
+}
+
+void glWidget::initAttributeVariable(GLuint arrtibute, GLint num, GLuint buffer)
+{
+    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+    glVertexAttribPointer(arrtibute, num, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(arrtibute);
+}
+
+
+void glWidget::draw()
+{
+    //model Matrix (part of the mvp matrix)
+    modelMatrix.setToIdentity();
+    modelMatrix.rotate(-angleY, 1, 0, 0); //for mouse rotation
+    modelMatrix.rotate(angleX, 0, 1, 0); //for mouse rotation
+    //mvp: projection * view * model matrix  
+    mvpMatrix.setToIdentity();
+    mvpMatrix.perspective(30, 1, 1, 100); // verticalAngel, aspectRatio, nearPlane, farPlane
+    mvpMatrix.lookAt(QVector3D(cameraX, cameraY, cameraZ), QVector3D(0, 0, 0), QVector3D(0, 1, 0)); // lookAt(eye, center, up)
+    mvpMatrix *= modelMatrix;
+
+    glUniform1f(uKa, 0.2f);
+    glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, mvpMatrix.data()); //pass current model-view-projection Matrix to shader
+    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+    glDrawArrays(GL_TRIANGLES, 0, numVertices);
+    update();
+}
+
+
