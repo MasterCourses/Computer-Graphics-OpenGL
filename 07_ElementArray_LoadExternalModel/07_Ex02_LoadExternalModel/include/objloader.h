@@ -1,5 +1,13 @@
-/* objloader.h */
-/* https://github.com/BennyQBD/ModernOpenGLTutorial */
+/*
+ * Copyright (C) Benny Bobaganoosh
+ *
+ * obj_loader.h
+ *
+ * https://github.com/BennyQBD/ModernOpenGLTutorial
+ *
+ * The source files from the Intro to Modern OpenGL Tutorial series.
+ *
+ */
 
 #ifndef OBJ_LOADER_H_INCLUDED
 #define OBJ_LOADER_H_INCLUDED
